@@ -11,6 +11,8 @@ import os
 from statistics import mean
 import csv
 import sys
+import warnings
+warnings.filterwarnings("ignore")   
 p = os.path.dirname(__file__)
 Path(f"{p}/results").mkdir(parents=True, exist_ok=True)
 def diametr(h,V):
