@@ -8,7 +8,7 @@
 
 4.поочерёдно вписывать команды в терминал:
 
-	pip install pipenv
+	pip install pipenv ( для запуска этой команды нужно открыть отдельно windows powershell от имени администратора)
  
 	python -m venv venv
  
