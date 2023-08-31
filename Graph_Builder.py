@@ -395,7 +395,7 @@ def plotter(df_full, max_depth, k_v):
     fig.tight_layout()
     plt.grid(visible=True, which="minor", alpha=0.5, linewidth=left_linewidth / 2)
     plt.savefig(
-        "Temp\Temp.png",
+        "temp.png",
         orientation="portrait",
         dpi=200,
         bbox_inches="tight",
@@ -505,7 +505,7 @@ def create_pdf(filename):
             border=border[1],
         )
     pdf.cell(w=0, h=g.cell_height, txt="", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-    pdf.image("Temp\Temp.png", x="C", y=None, w=190, h=0, link="")
+    pdf.image("temp.png", x="C", y=None, w=190, h=0, link="")
     data=CRISTAL_MAIDEN(filename)
     pdf.set_font("NotoSans", "B", size=4)
     spacing=1
@@ -609,7 +609,7 @@ if __name__ == "__main__":
                     Errors_count+=1
             progress_bar.update(visible=False)
             files_list=[]
-            os.remove('Temp\Temp.png')
+            os.remove('temp.png')
             window["-FILESLB-"].Update(files_list)
             if Errors_count == 0:
                 layout1 = [
