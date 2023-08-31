@@ -395,7 +395,7 @@ def plotter(df_full, max_depth, k_v):
     fig.tight_layout()
     plt.grid(visible=True, which="minor", alpha=0.5, linewidth=left_linewidth / 2)
     plt.savefig(
-        "temp.png",
+        "Temp\Temp.png",
         orientation="portrait",
         dpi=200,
         bbox_inches="tight",
@@ -443,7 +443,7 @@ def create_pdf(filename):
     wl = 53
     wc = 67
     wr = 0
-    pdf.set_font("NotoSans", "", 10)
+    pdf.set_font("NotoSans", "", 10)    
     # for d in g.meta, g.calc, g.time:
     meta_list = []
     calc_list = []
@@ -505,7 +505,7 @@ def create_pdf(filename):
             border=border[1],
         )
     pdf.cell(w=0, h=g.cell_height, txt="", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-    pdf.image("temp.png", x="C", y=None, w=190, h=0, link="")
+    pdf.image("Temp\Temp.png", x="C", y=None, w=190, h=0, link="")
     data=CRISTAL_MAIDEN(filename)
     pdf.set_font("NotoSans", "B", size=4)
     spacing=1
@@ -602,15 +602,20 @@ if __name__ == "__main__":
                 progress_bar.update(i, length)
                 try:
                     main(file)
+                    
                 except (ValueError, IndexError, KeyError):
                     name=str(file.split('/')[-1])
                     Errors.append(name)
                     Errors_count+=1
             progress_bar.update(visible=False)
+            files_list=[]
+            os.remove('Temp\Temp.png')
+            window["-FILESLB-"].Update(files_list)
             if Errors_count == 0:
                 layout1 = [
                     [sg.Text('Все файлы успешно обработаны', size=(35, 1),key='-text-', font='Helvetica 16')]]
                 window1 = sg.Window('Диспетчер', layout1, size=(400,50))
+                files_list = []
                 window1.read()
             else:
                 layout2 = [
@@ -625,6 +630,6 @@ if __name__ == "__main__":
                     event, values = window2.read()
                     if event == sg.WINDOW_CLOSED or event == "Закрыть":
                         break
-                # Закрытие окна после завершения
+                # Закрытие окна после завершения               
                 window2.close()
     window.close()
