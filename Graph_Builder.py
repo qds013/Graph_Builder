@@ -16,7 +16,7 @@ import warnings
 # работа с временными файлами
 import tempfile
 
-# warnings.filterwarnings("ignore")
+warnings.filterwarnings("ignore")
 
 # Создавать папку в каталоге с программой неправильно
 #p = os.path.dirname(__file__)
