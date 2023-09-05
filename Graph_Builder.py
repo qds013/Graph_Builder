@@ -12,9 +12,20 @@ from statistics import mean
 import csv
 import sys
 import warnings
-warnings.filterwarnings("ignore")   
-p = os.path.dirname(__file__)
-Path(f"{p}/results").mkdir(parents=True, exist_ok=True)
+
+# работа с временными файлами
+import tempfile
+
+# warnings.filterwarnings("ignore")
+
+# Создавать папку в каталоге с программой неправильно
+#p = os.path.dirname(__file__)
+p = tempfile.gettempdir()
+Path(f"{p}/GraphBuilder").mkdir(parents=True, exist_ok=True)
+
+# задаем имя временного файла в системном TEMP каталоге
+TempPngFileName = p + '/GraphBuilder/temp.png'
+
 def diametr(h,V):
     return round((math.sqrt((abs((4*V)/(math.pi*h))))*100),0)
 def Invoker(filename):
@@ -146,12 +157,13 @@ def CRISTAL_MAIDEN(filename):
     Finally.append(['MAX:', '', '', str(max(Height)), str(Time), str(max(Mean_Amperage)), str(max(MAX_Amperage)),
                     str(max(diametr_mas)),str(max(axe))])
     return Finally
+
 class PDF(FPDF):
     def __init__(self):
         super().__init__()
     def footer(self):
         self.set_y(-15)
-        self.add_font("NotoSans", style="", fname="fonts/NotoSans-Regular.ttf")
+        # self.add_font("NotoSans", style="", fname="fonts/NotoSans-Regular.ttf")
         self.set_font("NotoSans", "", 8)
         self.cell(
             0,
@@ -162,6 +174,7 @@ class PDF(FPDF):
             new_y=YPos.TOP,
             align="C",
         )
+
 class Globus:
     def __init__(self):
         self.reset()
@@ -312,6 +325,7 @@ def plotter(df_full, max_depth, k_v):
     right_linewidth = left_linewidth
     font_size = 5
     pos_dif = -0.07
+    # Figures created through the pyplot interface (`matplotlib.pyplot.figure`) are retained until explicitly closed and may consume too much memory
     fig, (ax1, ax0) = plt.subplots(
         ncols=2, gridspec_kw={"width_ratios": [2, 1]}, figsize=(8, 4)
     )
@@ -395,11 +409,14 @@ def plotter(df_full, max_depth, k_v):
     fig.tight_layout()
     plt.grid(visible=True, which="minor", alpha=0.5, linewidth=left_linewidth / 2)
     plt.savefig(
-        "temp.png",
+        TempPngFileName,
         orientation="portrait",
         dpi=200,
         bbox_inches="tight",
     )
+    # Consider using `matplotlib.pyplot.close()`
+    plt.close('all')
+
 def set_calc_and_time(df, df_full, max_depth, k_v):
     g.calc.update(
         {
@@ -505,7 +522,9 @@ def create_pdf(filename):
             border=border[1],
         )
     pdf.cell(w=0, h=g.cell_height, txt="", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-    pdf.image("temp.png", x="C", y=None, w=190, h=0, link="")
+
+    pdf.image(TempPngFileName, x="C", y=None, w=190, h=0, link="")
+
     data=CRISTAL_MAIDEN(filename)
     pdf.set_font("NotoSans", "B", size=4)
     spacing=1
@@ -526,6 +545,8 @@ def create_pdf(filename):
     except Exception:
         Path(f"results").mkdir(parents=True, exist_ok=True)
         pdf.output(result_filename)
+
+# *** main ***
 def main(filename):
     set_meta(filename)
     if not g.filetype:
@@ -541,6 +562,7 @@ def main(filename):
     set_calc_and_time(df, df_full, max_depth, k_v)
     create_pdf(filename)
     g.reset()
+
 layout = [
     [
         sg.LBox([], size=(60, 10), key="-FILESLB-"),
@@ -609,7 +631,6 @@ if __name__ == "__main__":
                     Errors_count+=1
             progress_bar.update(visible=False)
             files_list=[]
-            os.remove('temp.png')
             window["-FILESLB-"].Update(files_list)
             if Errors_count == 0:
                 layout1 = [
