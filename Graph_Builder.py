@@ -16,7 +16,7 @@ import warnings
 # работа с временными файлами
 import tempfile
 
-warnings.filterwarnings("ignore")
+# warnings.filterwarnings("ignore")
 
 # Создавать папку в каталоге с программой неправильно
 #p = os.path.dirname(__file__)
@@ -28,6 +28,7 @@ TempPngFileName = p + '/GraphBuilder/temp.png'
 
 def diametr(h,V):
     return round((math.sqrt((abs((4*V)/(math.pi*h))))*100),0)
+
 def Invoker(filename):
     GuhHeader1 = ['GHSYS', '<>', '10094401', 'UFA M7', 'ym Geoizol', 'AVTOBAN', 'FUNDEX', '0', '0', '800', '0', '4',
                 '4514AD072']
@@ -283,10 +284,12 @@ def create_df(df_full):
     df["Change"] = df["Down"].notna()
     df["Cm_depth"] = df["Depth"].apply(lambda x: int(abs(x) * 100) if x < 0 else 0)
     return df
+
 def depth_func(df):
     max_depth = df.Cm_depth.max()
     g.volume_dict_cyl = {i: 0 for i in range(max_depth + 1)}
     return max_depth
+
 def graph_builder(df):
     volume = 0  # объем последнего шага
     cycle_start_cm = 0  # нижняя точка цикла
@@ -625,9 +628,9 @@ if __name__ == "__main__":
                 try:
                     main(file)
                     
-                except (ValueError, IndexError, KeyError):
+                except (ValueError, IndexError, KeyError, ZeroDivisionError) as e:
                     name=str(file.split('/')[-1])
-                    Errors.append(name)
+                    Errors.append(name + ': ' + str(e))
                     Errors_count+=1
             progress_bar.update(visible=False)
             files_list=[]
