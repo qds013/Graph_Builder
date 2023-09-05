@@ -628,7 +628,7 @@ if __name__ == "__main__":
                 try:
                     main(file)
                     
-                except (ValueError, IndexError, KeyError, ZeroDivisionError) as e:
+                except (ValueError, IndexError, KeyError, ZeroDivisionError, TypeError) as e:
                     name=str(file.split('/')[-1])
                     Errors.append(name + ': ' + str(e))
                     Errors_count+=1
